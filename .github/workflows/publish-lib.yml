@@ -3,6 +3,7 @@ name: "publish-lib"
 on:
   push:
     tags: [ "**" ]
+  workflow_dispatch:
 
 jobs:
   build_job:
