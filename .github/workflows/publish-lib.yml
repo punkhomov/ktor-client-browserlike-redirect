@@ -1,0 +1,30 @@
+name: "publish-lib"
+
+on:
+  push:
+    tags: [ "**" ]
+
+env:
+  ORG_GRADLE_PROJECT_githubUsername: ${{ github.actor }}
+  ORG_GRADLE_PROJECT_githubPassword: ${{ github.token }}
+
+jobs:
+  build_job:
+    runs-on: "macos-latest"
+    steps:
+      - name: "Checkout sources"
+        uses: actions/checkout@v4
+
+      - name: "Cache Gradle and Konan"
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.konan/dependencies
+          key: ${{ runner.os }}-${{ hashFiles('**/*.gradle.kts', '**/.lock') }}
+
+      - name: "Setup Gradle"
+        uses: gradle/gradle-build-action@v3
+
+      - name: "Publish"
+        run: ./gradlew publish --no-configure-on-demand --no-watch-fs --no-daemon
