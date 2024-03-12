@@ -4,13 +4,12 @@ on:
   push:
     tags: [ "**" ]
 
-env:
-  ORG_GRADLE_PROJECT_githubUsername: ${{ github.actor }}
-  ORG_GRADLE_PROJECT_githubPassword: ${{ github.token }}
-
 jobs:
   build_job:
     runs-on: "macos-latest"
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: "Checkout sources"
         uses: actions/checkout@v4
@@ -31,3 +30,6 @@ jobs:
 
       - name: "Publish"
         run: ./gradlew publish --no-configure-on-demand --no-watch-fs --no-daemon
+        env:
+          ORG_GRADLE_PROJECT_githubUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_githubPassword: ${{ github.token }}
